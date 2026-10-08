@@ -1,8 +1,7 @@
 # Rota Exata
 
 ## Objetivos
-O sistema vai escolher uma cor aleatória e gerar uma combinação de cores baseado na escolha de uma 
-outra cor que o usuário vai escolher, usando o circulo cromático.
+crie um site que calcula quanto de combustível que o usuário vai definir pela quilometragem e pelo preço de mercado, além disso ele precisa gerar o historico dessas informações, na pagina inicial deve conter o menu, historico, e calculadora e configurações. na calculadora o usuario preenche o tipo de combustivel, o tipo de veiculo o preço do combustivel e o consumo por km rodado, e a rota que ele vai percorrer e o sistema vai calcular o quanto esta gastando por litro a calculadora vai tambem mostra o custo estimado do percurso e o quanto de combustível é necessário pra rota. 
 
 ### Stack Tecnlógico
 - Backend: PHP estruturado com sessões nativas
