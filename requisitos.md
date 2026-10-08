@@ -9,7 +9,7 @@ crie um site que calcula quanto de combustível que o usuário vai definir pela 
 - Frontend: HTML5, PHP, CSS, Tailwind CSS
 
 #### Regras de negócio (CORE)
-Tratar senhas de usuários com hash bcript
+Tratar senhas de usuários com hash bcrypt
 O sistema deve ter uma página de históricos e manter sempre os logs de qualquer alteração feita por 
 qualquer usuário, para auditorias futuras.
 
