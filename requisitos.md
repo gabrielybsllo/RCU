@@ -13,6 +13,25 @@ Tratar senhas de usuários com hash bcrypt
 O sistema deve ter uma página de históricos e manter sempre os logs de qualquer alteração feita por 
 qualquer usuário, para auditorias futuras.
 
+- fazer login.
+  kjsadahskhdkahsd
+  kjehsfdf
+  ds
+  f
+  ds
+  f
+  dsf
+- escolher personagen
+   sad
+  sa
+  d
+  sa
+  d
+  sad
+  a
+  sd
+- 
+
 ##### Regras Globais
 - Use sempre PDO para conexão e queries no MySQL para evitar SQL Injections
 - Mantenha o código limpo e comente apenas logicas complexas.
