@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rota Exata | Calculadora de Combustível</title>
+  <meta name="description" content="Calcule a quantidade de combustível necessária e o custo total estimado da sua viagem de forma rápida, precisa e moderna com a Rota Exata.">
+  <meta name="theme-color" content="#059669">
+
+  <!-- Favicon SVG embutido com tema de combustível e rota -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⛽</text></svg>">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            fuel: {
+              gasolina: '#e11d48',
+              etanol: '#16a34a',
+              diesel: '#d97706',
+              gnv: '#0284c7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Estilos Customizados e Animações -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased flex flex-col min-h-screen">
+
+  <!-- Header / Navbar -->
+  <header class="glass-header text-white sticky top-0 z-50 border-b border-slate-800 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <!-- Logo Icon -->
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-900/40">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="text-2xl font-black font-display tracking-tight text-white flex items-center gap-1.5">
+            Rota <span class="text-emerald-400">Exata</span>
+          </span>
+          <p class="text-xs text-slate-400 font-medium">Calculadora Inteligente de Combustível</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="#calculadora" class="text-sm font-medium text-slate-300 hover:text-white transition hidden sm:inline-block">Calculadora</a>
+        <a href="#comparador-dica" class="text-sm font-medium text-slate-300 hover:text-white transition hidden md:inline-block">Dicas de Consumo</a>
+        <a href="php/index.php" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition" title="Versão com suporte a PHP Estruturado e MySQL">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Versão PHP
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner de Destaque / Hero -->
+  <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white pt-10 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold mb-6">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+        </svg>
+        <span>Planeje sua rota &bull; Economize combustível &bull; Sem surpresas</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+        Calcule o Custo e Combustível <br class="hidden sm:inline">da sua <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Próxima Viagem</span>
+      </h1>
+      <p class="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
+        Informe a distância, o consumo do veículo e o preço atual na sua região. Obtenha instantaneamente a quantidade necessária e o valor total com precisão matemática.
+      </p>
+    </div>
+  </section>
+
+  <!-- Conteúdo Principal / Calculadora -->
+  <main id="calculadora" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 mb-16 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- COLUNA ESQUERDA: Formulário de Entrada (7 colunas no Desktop) -->
+      <div class="lg:col-span-7">
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                1
+              </div>
+              <div>
+                <h2 class="text-xl font-bold font-display text-slate-800">Dados da Viagem</h2>
+                <p class="text-xs text-slate-500">Preencha os campos abaixo com os dados do seu veículo e trajeto</p>
+              </div>
+            </div>
+            <button type="button" id="btnLimpar" class="text-xs font-medium text-slate-500 hover:text-red-600 transition flex items-center gap-1 py-1 px-2.5 rounded-md hover:bg-red-50">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              Limpar dados
+            </button>
+          </div>
+
+          <form id="calcForm" novalidate>
+            <!-- 1. Tipo de Veículo -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-slate-700 mb-2">
+                Tipo de Veículo <span class="text-red-500">*</span>
+              </label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <!-- Carro -->
+                <div class="selectable-card vehicle-selector-card active p-3 rounded-xl text-center bg-white" data-vehicle="carro" role="radio" aria-checked="true" tabindex="0">
+                  <div class="card-icon text-emerald-600 mx-auto mb-1.5 flex justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 17h.01M16 17h.01M3 13h18M5 17h14a2 2 0 002-2V9a2 2 0 00-2-2h-3.93a2 2 0 01-1.66-.9l-.82-1.2A2 2 0 0010.93 4H7.07a2 2 0 00-1.66.9L4.59 6.1A2 2 0 012.93 7H3a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <span class="text-xs font-semibold block text-slate-700">Carro</span>
+                  <span class="text-[10px] text-slate-400 block">Passeio</span>
+                </div>
+
+                <!-- Moto -->
+                <div class="selectable-card vehicle-selector-card p-3 rounded-xl text-center bg-white" data-vehicle="moto" role="radio" aria-checked="false" tabindex="0">
+                  <div class="card-icon text-slate-500 mx-auto mb-1.5 flex justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4v1m6 11h2m-6 0h-4v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3H2m18 0a4 4 0 11-8 0 4 4 0 018 0zM6 16a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                  </div>
+                  <span class="text-xs font-semibold block text-slate-700">Moto</span>
+                  <span class="text-[10px] text-slate-400 block">2 Rodas</span>
+                </div>
+
+                <!-- Van / Utilitário -->
+                <div class="selectable-card vehicle-selector-card p-3 rounded-xl text-center bg-white" data-vehicle="van" role="radio" aria-checked="false" tabindex="0">
+                  <div class="card-icon text-slate-500 mx-auto mb-1.5 flex justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1h3m4 0h1a1 1 0 001-1v-4a1 1 0 00-.293-.707l-2.414-2.414A1 1 0 0016.586 7H13"></path>
+                    </svg>
+                  </div>
+                  <span class="text-xs font-semibold block text-slate-700">Van</span>
+                  <span class="text-[10px] text-slate-400 block">Utilitário</span>
+                </div>
+
+                <!-- Caminhão -->
+                <div class="selectable-card vehicle-selector-card p-3 rounded-xl text-center bg-white" data-vehicle="caminhao" role="radio" aria-checked="false" tabindex="0">
+                  <div class="card-icon text-slate-500 mx-auto mb-1.5 flex justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 18H5a2 2 0 01-2-2V7a2 2 0 012-2h10a2 2 0 012 2v9a2 2 0 01-2 2h-1m-7 0a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0m0 0h1a2 2 0 002-2v-3.34a2 2 0 00-.586-1.414l-2.828-2.828A2 2 0 0017.172 8H15"></path>
+                    </svg>
+                  </div>
+                  <span class="text-xs font-semibold block text-slate-700">Caminhão</span>
+                  <span class="text-[10px] text-slate-400 block">Pesado / Ônibus</span>
+                </div>
+              </div>
+              <div id="erro-veiculo" class="error-message hidden" role="alert"></div>
+            </div>
+
+            <!-- 2. Tipo de Combustível -->
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-semibold text-slate-700">
+                  Tipo de Combustível <span class="text-red-500">*</span>
+                </label>
+                <span class="text-xs text-slate-400">Altera unidades para L ou m³</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <!-- Gasolina -->
+                <div class="selectable-card fuel-selector-card active p-3 rounded-xl text-center bg-white" data-fuel="gasolina" role="radio" aria-checked="true" tabindex="0">
+                  <div class="w-3.5 h-3.5 rounded-full bg-rose-500 mx-auto mb-1.5 ring-2 ring-rose-200"></div>
+                  <span class="text-xs font-semibold block text-slate-800">Gasolina</span>
+                  <span class="text-[10px] text-slate-400 block">R$/L &bull; km/L</span>
+                </div>
+
+                <!-- Etanol -->
+                <div class="selectable-card fuel-selector-card p-3 rounded-xl text-center bg-white" data-fuel="etanol" role="radio" aria-checked="false" tabindex="0">
+                  <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 mx-auto mb-1.5 ring-2 ring-emerald-200"></div>
+                  <span class="text-xs font-semibold block text-slate-800">Etanol</span>
+                  <span class="text-[10px] text-slate-400 block">R$/L &bull; km/L</span>
+                </div>
+
+                <!-- Diesel -->
+                <div class="selectable-card fuel-selector-card p-3 rounded-xl text-center bg-white" data-fuel="diesel" role="radio" aria-checked="false" tabindex="0">
+                  <div class="w-3.5 h-3.5 rounded-full bg-amber-500 mx-auto mb-1.5 ring-2 ring-amber-200"></div>
+                  <span class="text-xs font-semibold block text-slate-800">Diesel</span>
+                  <span class="text-[10px] text-slate-400 block">R$/L &bull; km/L</span>
+                </div>
+
+                <!-- GNV -->
+                <div class="selectable-card fuel-selector-card p-3 rounded-xl text-center bg-white" data-fuel="gnv" role="radio" aria-checked="false" tabindex="0">
+                  <div class="w-3.5 h-3.5 rounded-full bg-sky-500 mx-auto mb-1.5 ring-2 ring-sky-200"></div>
+                  <span class="text-xs font-semibold block text-slate-800">GNV</span>
+                  <span class="text-[10px] text-sky-600 font-medium block">R$/m³ &bull; km/m³</span>
+                </div>
+              </div>
+              <div id="erro-combustivel" class="error-message hidden" role="alert"></div>
+            </div>
+
+            <!-- 3. Distância da Viagem -->
+            <div class="mb-5">
+              <label for="distancia" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Distância da Viagem (km) <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="distancia"
+                  name="distancia"
+                  inputmode="decimal"
+                  placeholder="Ex: 320 ou 150,5"
+                  class="input-custom pr-16"
+                  autocomplete="off"
+                  required
+                  aria-describedby="erro-distancia"
+                >
+                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
+                  <span class="unit-badge">KM</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Quilômetros totais do percurso de ida (ou ida e volta se desejar).</p>
+              <div id="erro-distancia" class="error-message hidden" role="alert"></div>
+            </div>
+
+            <!-- 4. Preço e Consumo em Duas Colunas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+              <!-- Preço do Combustível -->
+              <div>
+                <label for="preco" id="labelPrecoUnidade" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Preço do Combustível (R$/L) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="preco"
+                    name="preco"
+                    inputmode="decimal"
+                    placeholder="Ex: 5,89"
+                    class="input-custom pr-20"
+                    autocomplete="off"
+                    required
+                    aria-describedby="erro-preco"
+                  >
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span id="badgePrecoUnidade" class="unit-badge">R$/L</span>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Preço unitário pago no posto na sua região.</p>
+                <div id="erro-preco" class="error-message hidden" role="alert"></div>
+              </div>
+
+              <!-- Consumo Médio do Veículo -->
+              <div>
+                <label for="consumo" id="labelConsumoUnidade" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Consumo Médio (km/L) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="consumo"
+                    name="consumo"
+                    inputmode="decimal"
+                    placeholder="Ex: 12,0"
+                    class="input-custom pr-20"
+                    autocomplete="off"
+                    required
+                    aria-describedby="erro-consumo"
+                  >
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span id="badgeConsumoUnidade" class="unit-badge">km/L</span>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Autonomia média do veículo na estrada ou cidade.</p>
+                <div id="erro-consumo" class="error-message hidden" role="alert"></div>
+              </div>
+            </div>
+
+            <!-- BOTÃO DESTAQUE CALCULAR -->
+            <button
+              type="submit"
+              id="btnCalcular"
+              class="btn-calc-glow w-full py-4 px-6 rounded-xl text-white font-bold text-lg font-display tracking-wide shadow-lg flex items-center justify-center gap-3 cursor-pointer group"
+            >
+              <svg class="w-6 h-6 transform group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+              <span>CALCULAR VIAGEM</span>
+            </button>
+            <p class="text-center text-xs text-slate-400 mt-2.5">
+              Aceita vírgula ou ponto para casas decimais (ex: 12,5 ou 12.5)
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA: Apresentação dos Resultados (5 colunas no Desktop) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- Banner de Dados Alterados (Garante que resultado antigo não se passe por novo) -->
+        <div id="avisoDadosAlterados" class="stale-warning-banner hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl shadow-sm">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <div>
+              <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider">Dados do formulário alterados</h4>
+              <p class="text-xs text-amber-700 mt-0.5">Clique novamente em <strong>CALCULAR VIAGEM</strong> para atualizar a estimativa com os novos valores.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado Inicial: Nenhum cálculo realizado ainda -->
+        <div id="placeholderResultados" class="glass-panel rounded-2xl p-8 text-center shadow-lg border border-dashed border-slate-300">
+          <div class="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold font-display text-slate-800">Aguardando Parâmetros</h3>
+          <p class="text-sm text-slate-500 mt-2 max-w-xs mx-auto">
+            Preencha a distância, o preço e o consumo ao lado e clique em <strong>Calcular Viagem</strong> para visualizar os resultados detalhados.
+          </p>
+        </div>
+
+        <!-- CONTAINER DOS RESULTADOS CALCULADOS -->
+        <div id="resultadosContainer" class="hidden space-y-6">
+
+          <!-- CARD PRINCIPAL: CUSTO TOTAL DESTACADO VISUALMENTE -->
+          <div class="card-total-destaque rounded-2xl p-6 sm:p-7 text-white shadow-2xl">
+            <div class="flex items-center justify-between text-emerald-200 text-xs font-bold uppercase tracking-widest mb-1">
+              <span>Estimativa de Custo Total</span>
+              <span class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-full text-[10px] border border-emerald-400/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Cálculo Atualizado
+              </span>
+            </div>
+
+            <div class="mt-2">
+              <span id="resCustoTotal" class="text-4xl sm:text-5xl font-black font-display tracking-tight text-white block transition-opacity">
+                R$ 0,00
+              </span>
+              <p class="text-xs text-emerald-300/80 mt-1">Cálculo baseado no preço informado e consumo médio do veículo.</p>
+            </div>
+
+            <div class="mt-6 pt-5 border-t border-emerald-800/60 flex items-center justify-between text-sm">
+              <span class="text-emerald-200/90">Custo estimado por km:</span>
+              <span id="resCustoPorKm" class="font-bold text-white bg-emerald-900/60 px-2.5 py-1 rounded-lg border border-emerald-700/50">
+                R$ 0,00 / km
+              </span>
+            </div>
+          </div>
+
+          <!-- DETALHAMENTO: QUANTIDADE DE COMBUSTÍVEL E DISTÂNCIA -->
+          <div class="glass-panel rounded-2xl p-6 shadow-lg">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+              </svg>
+              Detalhamento do Consumo
+            </h3>
+
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Combustível Necessário -->
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <span class="text-xs text-slate-500 font-medium block">Combustível Necessário</span>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="resCombustivelQtd" class="text-2xl font-bold font-display text-slate-800">0,00</span>
+                  <span id="resCombustivelUnidade" class="text-xs font-semibold text-slate-500 uppercase">litros</span>
+                </div>
+                <span class="text-[10px] text-slate-400 block mt-1">distância ÷ consumo</span>
+              </div>
+
+              <!-- Distância Informada -->
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <span class="text-xs text-slate-500 font-medium block">Distância Informada</span>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span id="resDistancia" class="text-2xl font-bold font-display text-slate-800">0 km</span>
+                </div>
+                <span class="text-[10px] text-slate-400 block mt-1">percurso considerado</span>
+              </div>
+            </div>
+
+            <!-- Resumo dos parâmetros configurados -->
+            <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-600 space-y-1.5">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Veículo selecionado:</span>
+                <span id="resVeiculoInfo" class="font-medium text-slate-700">Carro</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Combustível e preço:</span>
+                <span id="resCombustivelInfo" class="font-medium text-slate-700">Gasolina</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Consumo médio utilizado:</span>
+                <span id="resConsumoInfo" class="font-medium text-slate-700">12,0 km/L</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- HISTÓRICO DE CÁLCULOS RECENTES -->
+        <div class="glass-panel rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Cálculos Recentes
+            </h4>
+            <button type="button" id="btnLimparHistorico" class="text-[11px] text-slate-400 hover:text-red-500 transition hidden">
+              Limpar histórico
+            </button>
+          </div>
+          <div id="historicoVazio" class="text-xs text-slate-400 italic py-2">
+            Nenhum cálculo registrado ainda nesta sessão.
+          </div>
+          <div id="historicoLista" class="space-y-2"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SEÇÃO INFORMATIVA: REGRA DOS 70% & DICAS DE ECONOMIA -->
+    <section id="comparador-dica" class="mt-14 glass-panel rounded-2xl p-6 sm:p-8 shadow-md">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider mb-2">
+          💡 Dica do Motorista
+        </div>
+        <h3 class="text-xl font-bold font-display text-slate-800">Etanol ou Gasolina? Como escolher?</h3>
+        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+          Tradicionalmente, no Brasil, o etanol torna-se financeiramente mais vantajoso quando o preço do litro do etanol corresponde a até <strong>70%</strong> do preço da gasolina (<code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Preço Etanol ÷ Preço Gasolina ≤ 0,70</code>). Em veículos mais modernos, essa paridade pode variar entre 70% e 75% conforme a calibração do motor.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-4 text-xs text-slate-500">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Sem necessidade de cadastro ou coleta de dados pessoais</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Totalmente compatível com GitHub Pages</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Fórmulas matemáticas exatas e auditáveis</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTA DE TRANSPARÊNCIA SOBRE PREÇOS & API -->
+    <div class="mt-8 text-center text-xs text-slate-400 max-w-xl mx-auto space-y-1">
+      <p>
+        O cálculo utiliza exclusivamente o preço informado pelo próprio usuário.
+      </p>
+      <p>
+        Para consultar referências de preços médios por estado, visite a documentação da 
+        <a href="https://combustivelapi.com.br/#documentacao" target="_blank" rel="noopener noreferrer" class="text-emerald-600 hover:underline font-medium">Combustível API</a>.
+      </p>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div class="flex items-center space-x-2">
+        <span class="font-display font-bold text-white text-sm">Rota Exata</span>
+        <span>&bull;</span>
+        <span>Calculadora de Combustível em Português Brasileiro (pt-BR)</span>
+      </div>
+      <div>
+        <span>Desenvolvido para máxima precisão e clareza de rota.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>
